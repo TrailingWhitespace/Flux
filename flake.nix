@@ -13,21 +13,21 @@
     pkgs = import nixpkgs { inherit system overlays; };
   in {
     devShells.${system}.default = pkgs.mkShell {
-      buildInputs = [
+      buildInputs = with pkgs; [
         # Rust backend
-        pkgs.rust-bin.stable.latest.default
-        pkgs.gcc
-        pkgs.pkg-config
-        pkgs.openssl
+        rust-bin.stable.latest.default
+        gcc
+        pkg-config
+        openssl
         
         # Node.js + pnpm for Next.js
-        pkgs.nodejs
-        pkgs.pnpm
+        nodejs
+        pnpm
         
         # Development tools
-        pkgs.cargo-watch
-        pkgs.cargo-edit
-        pkgs.rust-analyzer
+        cargo-watch
+        cargo-edit
+        rust-analyzer
       ];
 
       shellHook = ''
