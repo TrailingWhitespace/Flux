@@ -14,9 +14,10 @@ async fn main() {
         .await
         .unwrap();
     println!("listening on {}", listener.local_addr().unwrap());
-    axum::serve(listener, app).await;
+    axum::serve(listener, app).await.expect("Failed to start server");
 }
 
 async fn handler() -> Html<&'static str> {
     Html("<h1>Hello, World!</h1>")
 }
+
