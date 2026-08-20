@@ -30,6 +30,7 @@
         cargo-watch
         cargo-edit
         rust-analyzer
+        systemfd
       ];
 
       shellHook = ''
