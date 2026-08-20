@@ -1,13 +1,12 @@
 use axum::{
-    Json, Router,
-    extract::{Path, State},
-    routing::{get, post},
+    Json, Router, extract::{Path, Query, State}, routing::{get, post},
 };
 use chrono::Utc;
 use serde::Deserialize;
-use turso::{Connection, Rows};
+use turso::{Connection, Rows, Value, params_from_iter};
 
 use crate::{errors::FluxError, models::Todo};
+
 
 pub fn todos_router() -> Router<Connection> {
     Router::new()
@@ -18,10 +17,19 @@ pub fn todos_router() -> Router<Connection> {
         .route("/update_todo", post(update_todo))
 }
 
-pub async fn fetch_todos(State(conn): State<Connection>) -> Result<Json<Vec<Todo>>, FluxError> {
-    let mut rows = conn.query("SELECT * FROM todos", ()).await?;
+pub async fn fetch_todos(State(conn): State<Connection>, Query(params): Query<TodoQueryParams>) -> Result<Json<Vec<Todo>>, FluxError> {
+    let mut sql = String::from("SELECT * FROM todos WHERE 1=1");
+    let mut args: Vec<Value> = Vec::new();
 
-    let mut todos: Vec<Todo> = vec![];
+    // Completed query
+    if let Some(completed) = params.completed {
+        sql.push_str(" AND completed = ?");
+        args.push(Value::Integer(completed as i64));
+    }
+
+    let mut rows: Rows = conn.query(&sql, params_from_iter(args)).await?;
+
+    let mut todos: Vec<Todo> = Vec::new();
 
     while let Some(row) = rows.next().await? {
         let todo = Todo::try_from(&row)?;
@@ -142,3 +150,10 @@ pub struct IdRequest {
 
 pub type DeleteTodoRequest = IdRequest;
 // pub type ToggleTodoRequest = IdRequest;
+
+
+#[derive(Debug, Deserialize)]
+pub struct TodoQueryParams {
+    completed: Option<bool>,
+    // search later
+}
