@@ -16,7 +16,7 @@
       buildInputs = with pkgs; [
         # Rust backend
      (rust-bin.stable.latest.default.override {
-  extensions = [ "rust-src" ];
+  extensions = [ "rust-src" ]; # for rust-analyzer to work
 })
         gcc
         pkg-config

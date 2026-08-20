@@ -22,7 +22,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         .nest("/todos", todos_router())
         .layer(
             CorsLayer::new()
-                .allow_origin("http://localhost:3000".parse::<HeaderValue>().unwrap())
+                .allow_origin("http://localhost:5000".parse::<HeaderValue>().unwrap())
                 .allow_methods(Any)
                 .allow_headers(Any), // Set specific methods and headers later
         )

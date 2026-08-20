@@ -4,6 +4,7 @@ use axum::{http::StatusCode, response::IntoResponse};
 pub enum FluxError {
     DatabaseError(turso::Error),
     NotFound,
+    CustomError(String),
 }
 
 impl IntoResponse for FluxError {
@@ -14,6 +15,11 @@ impl IntoResponse for FluxError {
                 (StatusCode::INTERNAL_SERVER_ERROR, "Database error.").into_response()
             }
             FluxError::NotFound => (StatusCode::NOT_FOUND, "Not found.").into_response(),
+            FluxError::CustomError(message) => (
+                StatusCode::INTERNAL_SERVER_ERROR,
+                format!("idk - {message}"),
+            )
+                .into_response(),
         }
     }
 }
