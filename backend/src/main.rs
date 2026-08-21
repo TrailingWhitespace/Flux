@@ -3,7 +3,7 @@ mod errors;
 mod models;
 mod routes;
 
-use axum::{Router, http::HeaderValue, response::Html, routing::get};
+use axum::{Router, response::Html, routing::get};
 use tokio::net::TcpListener;
 use tower_http::cors::{Any, CorsLayer};
 
@@ -19,13 +19,15 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     // for example turso::Error into a dyn Error which is then allocated on the heap using Box<> since we dont know the size of
     // the error at compile time
 
+    dotenvy::dotenv().ok();
+
     let conn = init_database().await?;
     let app = Router::new()
         .route("/", get(check_health))
         .nest("/todos", todos_router())
         .layer(
             CorsLayer::new()
-                .allow_origin(Any)
+                .allow_origin(Any) // allow specific ips from env ALLOWED_ORIGINS later
                 .allow_methods(Any)
                 .allow_headers(Any), // Set specific methods and headers later
         )
@@ -33,14 +35,16 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     let mut listenfd = ListenFd::from_env();
 
+    let bind_addr = std::env::var("BIND_ADDR").unwrap_or_else(|_| "0.0.0.0:3000".to_string());
+
     let listener = match listenfd.take_tcp_listener(0).unwrap() {
         // if we are given a tcp listener on listen fd 0, we use that one
         Some(listener) => {
             listener.set_nonblocking(true).unwrap();
             TcpListener::from_std(listener).unwrap()
         } // otherwise fall back to local listening
-        None => TcpListener::bind("0.0.0.0:3000").await.unwrap(), // all interfaces, so works on tailscale ip, 
-        // no need to be on the same network (well tailscale needs to be running on my phone aswell, so its all interfaces including the tailscale interface i guess)
+        None => TcpListener::bind(bind_addr).await.unwrap(), // all interfaces, so works on tailscale ip,
+                                                             // no need to be on the same network (well tailscale needs to be running on my phone aswell, so its all interfaces including the tailscale interface i guess)
     };
 
     println!("listening on {}", listener.local_addr().unwrap());

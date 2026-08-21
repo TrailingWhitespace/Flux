@@ -3,9 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "dotenv -e .env -- sh -c 'next dev -p ${PORT:-8000}'",
     "build": "next build",
-    "start": "next start",
+    "start": "dotenv -e .env -- sh -c 'next start -p ${PORT:-8000}'",
     "lint": "biome check",
     "format": "biome format --write"
   },
@@ -21,6 +21,8 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "babel-plugin-react-compiler": "1.0.0",
+    "dotenv": "^17.4.2",
+    "dotenv-cli": "^11.0.0",
     "tailwindcss": "^4",
     "typescript": "^5"
   },
