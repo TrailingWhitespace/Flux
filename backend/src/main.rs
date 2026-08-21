@@ -4,10 +4,13 @@ mod models;
 mod routes;
 
 use axum::{Router, http::HeaderValue, response::Html, routing::get};
+use tokio::net::TcpListener;
 use tower_http::cors::{Any, CorsLayer};
 
 use database::init_database;
 use routes::todos::todos_router;
+
+use listenfd::ListenFd;
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
@@ -22,15 +25,22 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         .nest("/todos", todos_router())
         .layer(
             CorsLayer::new()
-                .allow_origin("http://localhost:5000".parse::<HeaderValue>().unwrap())
+                .allow_origin("http://localhost:3000".parse::<HeaderValue>().unwrap())
                 .allow_methods(Any)
                 .allow_headers(Any), // Set specific methods and headers later
         )
         .with_state(conn);
 
-    let listener = tokio::net::TcpListener::bind("127.0.0.1:5000")
-        .await
-        .unwrap();
+    let mut listenfd = ListenFd::from_env();
+
+    let listener = match listenfd.take_tcp_listener(0).unwrap() {
+        // if we are given a tcp listener on listen fd 0, we use that one
+        Some(listener) => {
+            listener.set_nonblocking(true).unwrap();
+            TcpListener::from_std(listener).unwrap()
+        } // otherwise fall back to local listening
+        None => TcpListener::bind("0.0.0.0:3000").await.unwrap(), // all interfaces, so works on tailscale ip, no need to be on the same network
+    };
 
     println!("listening on {}", listener.local_addr().unwrap());
     axum::serve(listener, app)

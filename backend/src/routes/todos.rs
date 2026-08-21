@@ -1,12 +1,13 @@
 use axum::{
-    Json, Router, extract::{Path, Query, State}, routing::{get, post},
+    Json, Router,
+    extract::{Path, Query, State},
+    routing::{get, post},
 };
 use chrono::Utc;
 use serde::Deserialize;
 use turso::{Connection, Rows, Value, params_from_iter};
 
 use crate::{errors::FluxError, models::Todo};
-
 
 pub fn todos_router() -> Router<Connection> {
     Router::new()
@@ -17,7 +18,10 @@ pub fn todos_router() -> Router<Connection> {
         .route("/update_todo", post(update_todo))
 }
 
-pub async fn fetch_todos(State(conn): State<Connection>, Query(params): Query<TodoQueryParams>) -> Result<Json<Vec<Todo>>, FluxError> {
+pub async fn fetch_todos(
+    State(conn): State<Connection>,
+    Query(params): Query<TodoQueryParams>,
+) -> Result<Json<Vec<Todo>>, FluxError> {
     let mut sql = String::from("SELECT * FROM todos WHERE 1=1");
     let mut args: Vec<Value> = Vec::new();
 
@@ -150,7 +154,6 @@ pub struct IdRequest {
 
 pub type DeleteTodoRequest = IdRequest;
 // pub type ToggleTodoRequest = IdRequest;
-
 
 #[derive(Debug, Deserialize)]
 pub struct TodoQueryParams {
