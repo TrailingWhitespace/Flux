@@ -25,7 +25,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         .nest("/todos", todos_router())
         .layer(
             CorsLayer::new()
-                .allow_origin("http://localhost:3000".parse::<HeaderValue>().unwrap())
+                .allow_origin(Any)
                 .allow_methods(Any)
                 .allow_headers(Any), // Set specific methods and headers later
         )
@@ -39,7 +39,8 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             listener.set_nonblocking(true).unwrap();
             TcpListener::from_std(listener).unwrap()
         } // otherwise fall back to local listening
-        None => TcpListener::bind("0.0.0.0:3000").await.unwrap(), // all interfaces, so works on tailscale ip, no need to be on the same network
+        None => TcpListener::bind("0.0.0.0:3000").await.unwrap(), // all interfaces, so works on tailscale ip, 
+        // no need to be on the same network (well tailscale needs to be running on my phone aswell, so its all interfaces including the tailscale interface i guess)
     };
 
     println!("listening on {}", listener.local_addr().unwrap());
