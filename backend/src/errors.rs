@@ -1,5 +1,6 @@
 use axum::{http::StatusCode, response::IntoResponse};
 
+// TODO: Better and more error types
 #[allow(dead_code)]
 pub enum FluxError {
     DatabaseError(turso::Error),

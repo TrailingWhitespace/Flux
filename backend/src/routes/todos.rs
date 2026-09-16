@@ -1,7 +1,5 @@
 use axum::{
-    Json, Router,
-    extract::{Path, Query, State},
-    routing::{get, post},
+    Json, Router, extract::{Path, Query, State}, routing::{get, post, put, delete},
 };
 use chrono::Utc;
 use serde::Deserialize;
@@ -10,12 +8,13 @@ use turso::{Connection, Rows, Value, params_from_iter};
 use crate::{errors::FluxError, models::Todo};
 
 pub fn todos_router() -> Router<Connection> {
+    // fetch a single todo route?
     Router::new()
         .route("/", get(fetch_todos))
         .route("/insert_todo", post(insert_todo))
-        .route("/delete_todo", post(delete_todo))
+        .route("/{id}/delete_todo", delete(delete_todo))
         .route("/{id}/toggle", post(toggle_todo)) // params instead of body
-        .route("/update_todo", post(update_todo))
+        .route("/{id}/update_todo", put(update_todo))
 }
 
 pub async fn fetch_todos(
@@ -69,21 +68,25 @@ pub async fn insert_todo(
     }
 }
 
+
 pub async fn delete_todo(
     State(conn): State<Connection>,
-    Json(payload): Json<DeleteTodoRequest>,
+    Path(id): Path<i64>,
 ) -> Result<Json<Todo>, FluxError> {
     let mut rows: Rows = conn
-        .query("DELETE FROM todos WHERE id = ? RETURNING *;", [payload.id])
+        .query("DELETE FROM todos WHERE id = ? RETURNING *;", [id])
         .await?;
 
     if let Some(row) = rows.next().await? {
         let todo = Todo::try_from(&row)?;
         Ok(Json(todo))
-    } else {
-        Err(FluxError::CustomError(String::from(
-            "Failed to delete todo.",
-        )))
+    } // else {
+    //     Err(FluxError::CustomError(String::from(
+    //         "Failed to delete todo.",
+    //     )))
+    // }
+    else {
+        Err(FluxError::NotFound)
     }
 }
 
@@ -118,12 +121,13 @@ pub async fn toggle_todo(
 
 pub async fn update_todo(
     State(conn): State<Connection>,
+    Path(id): Path<i64>,
     Json(payload): Json<UpdateTodoRequest>,
 ) -> Result<Json<Todo>, FluxError> {
     let mut rows: Rows = conn
         .query(
             "UPDATE todos SET todo = ? WHERE id = ? RETURNING *;",
-            (payload.todo, payload.id),
+            (payload.todo, id),
         )
         .await?;
 
@@ -135,25 +139,24 @@ pub async fn update_todo(
     }
 }
 
+#[derive(Debug, Deserialize)]
+pub struct UpdateTodoRequest {
+    pub todo: String,  // id comes from path 
+}
+
 // Validator to check lengths and such?
 #[derive(Debug, Deserialize)]
 pub struct CreateTodoRequest {
     pub todo: String,
 }
 
-#[derive(Debug, Deserialize)]
-pub struct UpdateTodoRequest {
-    pub id: i64,
-    pub todo: String,
-}
-
-#[derive(Debug, Deserialize)]
-pub struct IdRequest {
-    pub id: i64,
-}
-
-pub type DeleteTodoRequest = IdRequest;
+// #[derive(Debug, Deserialize)]
+// pub struct IdRequest {
+//     pub id: i64,
+// }
+// pub type DeleteTodoRequest = IdRequest;
 // pub type ToggleTodoRequest = IdRequest;
+// Toggle and Delete now use path so no struct required for the json payload
 
 #[derive(Debug, Deserialize)]
 pub struct TodoQueryParams {

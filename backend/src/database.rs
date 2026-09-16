@@ -13,11 +13,11 @@ pub async fn init_database() -> Result<Connection, Box<dyn std::error::Error>> {
     ).await?;
 
     // test insert
-    conn.execute(
-        "INSERT INTO todos (todo, completed) VALUES (?1, ?2);",
-        ("Do stuff", false),
-    )
-    .await?;
+    // conn.execute(
+    //     "INSERT INTO todos (todo, completed) VALUES (?1, ?2);",
+    //     ("Do stuff", false),
+    // )
+    // .await?;
 
     Ok(conn)
 }
