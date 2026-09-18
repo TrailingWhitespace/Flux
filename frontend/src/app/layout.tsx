@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import { Inter, Manrope } from "next/font/google";
+import { QueryProvider } from "@/lib/providers/query-provider";
 
 const fontBody = Inter({
   subsets: ["latin"],
@@ -27,7 +28,12 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="en" className={`${fontBody.variable} ${fontDisplay.variable}`}>
-      <body>{children}</body>
+      <body>
+        <QueryProvider>{children}</QueryProvider>
+      </body>
     </html>
   );
 }
+
+
+

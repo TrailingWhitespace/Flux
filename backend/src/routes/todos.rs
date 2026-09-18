@@ -15,6 +15,8 @@ pub fn todos_router() -> Router<Connection> {
         .route("/{id}/delete_todo", delete(delete_todo))
         .route("/{id}/toggle", post(toggle_todo)) // params instead of body
         .route("/{id}/update_todo", put(update_todo))
+        // do this like
+        // .route("/todos",put(update_todo).delete(delete_todo)) ?
 }
 
 pub async fn fetch_todos(
