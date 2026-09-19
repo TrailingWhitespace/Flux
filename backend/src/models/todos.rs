@@ -2,7 +2,6 @@ use crate::errors;
 use serde::{Deserialize, Serialize};
 use turso::Row;
 
-
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct Todo {
     pub id: String,
@@ -15,7 +14,7 @@ pub struct Todo {
     pub position: Option<i32>,
     pub created_at: i64,
     pub deleted_at: Option<i64>,
-} 
+}
 
 #[derive(Debug, Deserialize)]
 pub struct TodoInput {
