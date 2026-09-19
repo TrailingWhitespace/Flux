@@ -63,4 +63,6 @@ backend/target/
 
 # flux db
 flux.db
+flux.db-shm
+flux.db-wal
 flux.db-*
