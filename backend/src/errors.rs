@@ -5,6 +5,7 @@ use axum::{http::StatusCode, response::IntoResponse};
 pub enum FluxError {
     DatabaseError(turso::Error),
     NotFound,
+    InvalidColumn(&'static str),
     CustomError(String),
 }
 
@@ -16,6 +17,10 @@ impl IntoResponse for FluxError {
                 (StatusCode::INTERNAL_SERVER_ERROR, "Database error.").into_response()
             }
             FluxError::NotFound => (StatusCode::NOT_FOUND, "Not found.").into_response(),
+            FluxError::InvalidColumn(col) => {
+                eprintln!("Invalid or missing column: {col}");
+                (StatusCode::INTERNAL_SERVER_ERROR, "Data error.").into_response()
+            }
             FluxError::CustomError(message) => (
                 StatusCode::INTERNAL_SERVER_ERROR,
                 format!("idk - {message}"),
