@@ -7,10 +7,24 @@ pub async fn init_database() -> Result<Connection, Box<dyn std::error::Error>> {
     let db = Builder::new_local(&db_path).build().await?;
     let conn = db.connect()?;
 
+    // TODOS
     conn.execute(
-        "CREATE TABLE IF NOT EXISTS todos (id INTEGER PRIMARY KEY AUTOINCREMENT, todo text, completed boolean, completedAt INTEGER);",
-        ()
-    ).await?;
+        "CREATE TABLE IF NOT EXISTS todos (
+        id TEXT PRIMARY KEY,
+        title TEXT NOT NULL,
+        description TEXT,
+        completed INTEGER NOT NULL DEFAULT 0,
+        completed_at INTEGER,
+        priority INTEGER DEFAULT 0,
+        due_date INTEGER,
+        position INTEGER,
+        created_at INTEGER NOT NULL DEFAULT (unixepoch()),
+        deleted_at INTEGER
+    );",
+        (),
+    )
+    .await?;
+    // here
 
     // test insert
     // conn.execute(
