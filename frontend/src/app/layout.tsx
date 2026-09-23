@@ -1,6 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
-import { Inter, Manrope } from "next/font/google";
+import { Inter, Jersey_15, Manrope } from "next/font/google";
 import { QueryProvider } from "@/lib/providers/query-provider";
 
 const fontBody = Inter({
@@ -12,6 +12,13 @@ const fontBody = Inter({
 const fontDisplay = Manrope({
   subsets: ["latin"],
   variable: "--font-display",
+  display: "swap",
+});
+
+const fontTitle = Jersey_15({
+  weight: "400",
+  variable: "--font-title",
+  subsets: ["latin"],
   display: "swap",
 });
 
@@ -27,13 +34,14 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="en" className={`${fontBody.variable} ${fontDisplay.variable}`}>
+    <html
+      lang="en"
+      className={`${fontBody.variable} ${fontDisplay.variable} ${fontTitle.variable}`}
+    >
       <body>
-        <QueryProvider>{children}</QueryProvider>
+        <QueryProvider>{children}
+        </QueryProvider>
       </body>
     </html>
   );
 }
-
-
-
