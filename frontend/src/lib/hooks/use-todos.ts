@@ -23,7 +23,6 @@ export function useCreateTodo() {
   });
 }
 
-
 export function useToggleTodo() {
   const queryClient = useQueryClient();
   return useMutation({

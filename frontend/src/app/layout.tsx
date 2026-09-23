@@ -39,8 +39,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       className={`${fontBody.variable} ${fontDisplay.variable} ${fontTitle.variable}`}
     >
       <body>
-        <QueryProvider>{children}
-        </QueryProvider>
+        <QueryProvider>{children}</QueryProvider>
       </body>
     </html>
   );

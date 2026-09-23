@@ -1,6 +1,11 @@
 "use client";
 
-import { useTodos, useCreateTodo, useToggleTodo, useDeleteTodo } from "@/lib/hooks/use-todos";
+import {
+  useTodos,
+  useCreateTodo,
+  useToggleTodo,
+  useDeleteTodo,
+} from "@/lib/hooks/use-todos";
 
 export default function TodosPage() {
   const { data: todos, isLoading } = useTodos();
@@ -10,7 +15,6 @@ export default function TodosPage() {
   // each hook gives us the mutate function and here we rename/alias it to use
 
   if (isLoading) return <p>Loading...</p>;
-
 
   return (
     <main>
