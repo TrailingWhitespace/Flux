@@ -179,6 +179,7 @@ pub async fn restore_todo(
 }
 
 // TODO: Periodic or delete all todos whose "deleted_at" is NOT NULL, at once
+// also makes this a route ig
 #[allow(dead_code)]
 pub async fn purge_deleted_todos() {}
 
