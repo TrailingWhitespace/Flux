@@ -1,0 +1,111 @@
+.sidebar {
+  width: 240px;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--surface);
+  border-right: 1px solid var(--outline-variant);
+  padding: 20px 12px;
+  flex-shrink: 0;
+}
+
+.sidebar-header {
+  padding: 8px 12px 24px;
+  margin-top: 0;
+  padding-top: 0;
+}
+
+.sidebar-title {
+  color: var(--on-surface);
+  font-size: 50px;
+  font-family: var(--font-title);
+}
+
+.sidebar-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.sidebar-link {
+  position: relative; /* Required so active pill positions relative to the link */
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  color: var(--on-surface-variant);
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 500;
+  transition: color 0.15s ease;
+}
+
+.sidebar-link:hover {
+  color: var(--on-surface);
+}
+
+/* Ensure icons and text render above the animated pill background */
+.sidebar-icon,
+.sidebar-link span {
+  position: relative;
+  z-index: 2;
+}
+
+/* Active text state */
+.sidebar-link-active {
+  color: var(--on-primary-container);
+}
+
+/* animated sliding background pill */
+.sidebar-active-pill {
+  position: absolute;
+  inset: 0;
+  background: var(--primary-container);
+  border-radius: 8px;
+  z-index: 1;
+}
+
+/* ---------- mobile: floating bottom bar ---------- */
+@media (max-width: 640px) {
+  .sidebar {
+    position: fixed;
+    bottom: 16px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: auto;
+    height: auto;
+    flex-direction: row;
+    align-items: center;
+    padding: 8px;
+    border: 1px solid var(--outline-variant);
+    border-radius: 20px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+    z-index: 50;
+  }
+
+  .sidebar-header {
+    display: none;
+  }
+
+  .sidebar-nav {
+    flex-direction: row;
+    gap: 2px;
+  }
+
+  .sidebar-link {
+    flex-direction: column;
+    gap: 2px;
+    padding: 8px 14px;
+    font-size: 10px;
+    border-radius: 12px;
+  }
+
+  .sidebar-link span {
+    display: none;
+  }
+
+  .sidebar-active-pill {
+    border-radius: 12px;
+  }
+}

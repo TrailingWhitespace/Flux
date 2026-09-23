@@ -1,43 +1,43 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
-
-
 :root {
-  /* default theme and stuff */
-  --primary: #818CF8;
-  --on-primary: #1E1B4B;
-  --primary-container: #312E81;
-  --on-primary-container: #C7D2FE;
+  --primary: #f59e0b;
+  --on-primary: #451a03;
+  --primary-container: #78350f;
+  --on-primary-container: #fef3c7;
 
-  --secondary: #FBBF24;
-  --on-secondary: #451A03;
-  --secondary-container: #78350F;
-  --on-secondary-container: #FDE68A;
+  --secondary: #2dd4bf;
+  --on-secondary: #042f2e;
+  --secondary-container: #134e4a;
+  --on-secondary-container: #99f6e4;
 
-  --success: #34D399;
-  --on-success: #022C22;
-  --success-container: #064E3B;
-  --on-success-container: #6EE7B7;
+  --success: #34d399;
+  --on-success: #022c22;
+  --success-container: #064e3b;
+  --on-success-container: #6ee7b7;
 
-  --error: #F87171;
-  --on-error: #450A0A;
-  --error-container: #7F1D1D;
-  --on-error-container: #FCA5A5;
+  --error: #f87171;
+  --on-error: #450a0a;
+  --error-container: #7f1d1d;
+  --on-error-container: #fca5a5;
 
-  --bg: #0F172A;
-  --on-background: #F1F5F9;
+  --bg: #121212;
+  --on-background: #f5f5f5;
 
-  --surface: #1E293B;
-  --on-surface: #F1F5F9;
-  --surface-variant: #334155;
-  --on-surface-variant: #94A3B8;
+  --surface: #1e1e1e;
+  --on-surface: #f5f5f5;
+  --surface-variant: #2d2d2d;
+  --on-surface-variant: #a3a3a3;
 
-  --outline: #475569;
-  --outline-variant: #334155;
+  --outline: #525252;
+  --outline-variant: #404040;
+
+  --dur-1: 120ms;
+  --dur-2: 220ms;
+  --dur-3: 360ms;
+  --ease: cubic-bezier(0.2, 0, 0, 1);
 }
-
-
 
 * {
   box-sizing: border-box;
@@ -83,4 +83,22 @@ textarea {
 ::selection {
   background: var(--primary-container);
   color: var(--on-primary-container);
+}
+
+/* in globals.css */
+.app-shell {
+  display: flex;
+}
+
+.app-content {
+  flex: 1;
+}
+
+@media (max-width: 640px) {
+  .app-shell {
+    display: block;
+  }
+  .app-content {
+    padding-bottom: 88px; /* clears the floating bar so it never covers content */
+  }
 }
